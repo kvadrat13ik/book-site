@@ -2,196 +2,142 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Старинная книга</title>
-
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Georgia, serif;
-}
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Georgia, serif;
+  }
 
-/* КНИГА */
-.book {
-  position: relative;
-  width: 900px;
-  height: 550px;
-  perspective: 3000px;
-}
+  .book {
+    position: relative;
+    width: 450px; /* Ширина ОДНОЙ страницы */
+    height: 550px;
+    perspective: 1500px;
+  }
 
-/* КОРЕШОК */
-.spine {
-  position: absolute;
-  width: 6px;
-  height: 100%;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  background: #5a3b1e;
-  box-shadow: 0 0 20px rgba(0,0,0,0.8);
-  z-index: 1000;
-}
+  .spine {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    left: -5px; /* Прямо по центру разворота */
+    background: #3d2b16;
+    z-index: 100;
+    border-radius: 2px;
+  }
 
-/* СТРАНИЦА */
-.page {
-  position: absolute;
-  width: 50%;
-  height: 100%;
-  top: 0;
-  background: #f4e4c1;
-  transform-origin: left center;
-  transform-style: preserve-3d;
-  transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
-  box-shadow:
-    inset 0 0 60px rgba(0,0,0,0.25),
-    0 0 20px rgba(0,0,0,0.4);
-}
+  .page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #f4e4c1;
+    /* Важно: вращение всегда от левого края */
+    transform-origin: left center; 
+    transform-style: preserve-3d;
+    transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    box-shadow: inset 3px 0 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
 
-/* ПРАВАЯ СТРАНИЦА */
-.page.right {
-  left: 50%;
-  transform-origin: right center;
-}
+  /* Текстура бумаги */
+  .page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.1) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.05) 100%);
+    pointer-events: none;
+  }
 
-/* ТЕКСТУРА СТАРОЙ БУМАГИ */
-.page::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(120,80,30,0.2) 0%, transparent 60%),
-    radial-gradient(circle at 80% 80%, rgba(120,80,30,0.2) 0%, transparent 60%);
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
+  .page-content {
+    padding: 40px;
+    backface-visibility: hidden; /* Скрываем текст, когда страница перевернута */
+  }
 
-/* ПОТРЁПАННЫЕ КРАЯ */
-.page::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url('https://www.transparenttextures.com/patterns/old-paper.png');
-  opacity: 0.4;
-  pointer-events: none;
-}
+  /* Состояние перевернутой страницы */
+  .page.flipped {
+    transform: rotateY(-180deg);
+  }
 
-/* СОДЕРЖИМОЕ */
-.page-content {
-  padding: 40px;
-  height: 100%;
-  box-sizing: border-box;
-}
+  /* Кнопки управления */
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    display: flex;
+    gap: 20px;
+  }
 
-/* ИЗГИБ СТРАНИЦЫ */
-.page.flipping {
-  box-shadow:
-    inset 0 0 80px rgba(0,0,0,0.4),
-    0 0 40px rgba(0,0,0,0.6);
-}
-
-/* ПЕРЕВОРОТ */
-.page.flipped {
-  transform: rotateY(-180deg);
-}
-
-/* КНОПКИ */
-.controls {
-  position: absolute;
-  width: 100%;
-  top: 50%;
-  display: flex;
-  justify-content: space-between;
-  pointer-events: none;
-}
-
-.btn {
-  pointer-events: all;
-  cursor: pointer;
-  background: rgba(120,80,30,0.4);
-  padding: 15px 20px;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 22px;
-  user-select: none;
-}
+  .btn {
+    cursor: pointer;
+    background: #5a3b1e;
+    padding: 10px 25px;
+    color: #fff;
+    border-radius: 5px;
+    user-select: none;
+  }
 </style>
-
 </head>
 <body>
 
 <div class="book" id="book">
-
   <div class="spine"></div>
 
-  <!-- страницы -->
-  <div class="page left">
+  <div class="page" style="z-index: 1;">
     <div class="page-content">
-      <h2>Страница 1</h2>
+      <h2>Конец</h2>
+      <p>Последняя страница.</p>
     </div>
   </div>
 
-  <div class="page right">
+  <div class="page" style="z-index: 2;">
     <div class="page-content">
       <h2>Страница 2</h2>
+      <p>Текст второй страницы...</p>
     </div>
   </div>
 
-  <div class="page left">
+  <div class="page" style="z-index: 3;">
     <div class="page-content">
-      <h2>Страница 3</h2>
+      <h2>Страница 1</h2>
+      <p>Добро пожаловать в книгу!</p>
     </div>
   </div>
+</div>
 
-  <div class="page right">
-    <div class="page-content">
-      <h2>Страница 4</h2>
-    </div>
-  </div>
-
-  <!-- кнопки -->
-  <div class="controls">
-    <div class="btn" id="prev">&#9664;</div>
-    <div class="btn" id="next">&#9654;</div>
-  </div>
-
+<div class="controls">
+  <div class="btn" id="prev">Назад</div>
+  <div class="btn" id="next">Вперед</div>
 </div>
 
 <script>
-const pages = document.querySelectorAll(".page");
-let current = 0;
+  const pages = document.querySelectorAll(".page");
+  let current = pages.length - 1; // Начинаем с верхней страницы
 
-function flipNext() {
-  if (current >= pages.length) return;
+  document.getElementById("next").onclick = () => {
+    if (current >= 0) {
+      pages[current].classList.add("flipped");
+      // После поворота уменьшаем z-index, чтобы страница не перекрывала кнопки
+      setTimeout(() => {
+        pages[current + 1 === pages.length ? current : current].style.zIndex = 0;
+      }, 600);
+      current--;
+    }
+  };
 
-  pages[current].classList.add("flipping");
-
-  setTimeout(() => {
-    pages[current].classList.add("flipped");
-    pages[current].classList.remove("flipping");
-    current++;
-  }, 300);
-}
-
-function flipPrev() {
-  if (current <= 0) return;
-
-  current--;
-
-  pages[current].classList.add("flipping");
-
-  setTimeout(() => {
-    pages[current].classList.remove("flipped");
-    pages[current].classList.remove("flipping");
-  }, 300);
-}
-
-document.getElementById("next").onclick = flipNext;
-document.getElementById("prev").onclick = flipPrev;
+  document.getElementById("prev").onclick = () => {
+    if (current < pages.length - 1) {
+      current++;
+      pages[current].classList.remove("flipped");
+      pages[current].style.zIndex = pages.length - current;
+    }
+  };
 </script>
 
 </body>
