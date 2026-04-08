@@ -1,37 +1,27 @@
-// Загружаем content.json
 fetch('content.json')
-.then(response => response.json())
+.then(res => res.json())
 .then(data => {
-    const container = document.getElementById('book-container');
-    data.forEach((page, index) => {
-        const div = document.createElement('div');
-        div.className = 'page';
-        div.style.backgroundImage = `url('${page.texture}')`;
-        div.innerHTML = `
+    const book = $('#book-container');
+
+    data.forEach((page) => {
+        const div = $('<div/>', {class: 'page'}).css({
+            'background-image': `url('${page.texture}')`
+        }).html(`
             <h2>${page.title}</h2>
             <p>${page.text}</p>
-            ${page.image ? `<img src="${page.image}" style="max-width:100%; margin-top:10px;">` : ''}
-        `;
-        div.style.display = index === 0 ? 'block' : 'none';
-        container.appendChild(div);
+            ${page.image ? `<img src="${page.image}">` : ''}
+        `);
+        book.append(div);
     });
 
-    let currentPage = 0;
-    const pages = document.querySelectorAll('.page');
-
-    document.getElementById('next').onclick = () => {
-        if (currentPage < pages.length - 1) {
-            pages[currentPage].style.display = 'none';
-            currentPage++;
-            pages[currentPage].style.display = 'block';
-        }
-    };
-
-    document.getElementById('prev').onclick = () => {
-        if (currentPage > 0) {
-            pages[currentPage].style.display = 'none';
-            currentPage--;
-            pages[currentPage].style.display = 'block';
-        }
-    };
+    // Инициализация turn.js с двухстраничным режимом
+    book.turn({
+        width: 800,
+        height: 500,
+        autoCenter: true,
+        display: 'double',
+        elevation: 50,
+        gradients: true,
+        duration: 1000
+    });
 });
