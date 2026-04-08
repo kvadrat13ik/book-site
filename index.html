@@ -6,7 +6,6 @@
 <title>Старинная книга</title>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
 
 <style>
@@ -15,149 +14,108 @@
     padding: 0;
     background: black;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    overflow: hidden; /* Скрываем полосы прокрутки */
+    overflow: hidden;
   }
 
-  /* КОНТЕЙНЕР КНИГИ */
+  /* КНИГА */
   #book {
-    width: 900px;  /* Ширина разворота (две страницы) */
-    height: 600px; /* Высота книги */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    width: 900px;
+    height: 600px;
+    box-shadow: 0 10px 60px rgba(0,0,0,1);
   }
 
-  /* ОБЩИЙ СТИЛЬ ДЛЯ ВСЕХ СТРАНИЦ */
+  /* СТРАНИЦА С ВАШЕЙ ТЕКСТУРОЙ */
   .page {
-    position: relative;
     width: 450px;
     height: 600px;
-    background-color: #f4e4c1; /* Базовый цвет бумаги */
-    
-    /* ПРИМЕНЯЕМ ТЕКСТУРУ БУМАГИ ИЗ image_0.png */
-    background-image: url('image_0.png');
-    
-    /* Настройки текстуры, чтобы она покрывала весь лист */
-    background-size: cover; 
-    background-position: center;
+    background-color: #f4e4c1;
+    /* ВСТАВЛЕНО ВАШЕ ИМЯ ФАЙЛА */
+    background-image: url('file_000000007ed872439039a19be0aaa10f.jpg'); 
+    background-size: 100% 100%;
     background-repeat: no-repeat;
-    
-    /* Убираем стандартные рамки, Turn.js добавит тени сам */
-    box-shadow: none !important; 
-    border: none !important;
+    background-position: center;
   }
 
-  /* --- СТИЛИЗАЦИЯ ТВЕРДОЙ ОБЛОЖКИ (ПЕРВАЯ И ПОСЛЕДНЯЯ СТРАНИЦЫ) --- */
-  /* Мы используем CSS для имитации твердой обложки */
-  
-  /* Передняя обложка */
-  #book .p1 {
-    background: #5a3b1e; /* Коричневая кожа */
-    border-radius: 5px 0 0 5px;
-    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
-    color: transparent; /* Скрываем текст, если он есть */
-  }
-  
-  /* Задняя обложка */
-  #book .p4 { /* 4 - последняя страница в нашем примере */
-    background: #5a3b1e;
-    border-radius: 0 5px 5px 0;
-    box-shadow: inset -2px 2px 5px rgba(0,0,0,0.5);
-    color: transparent;
+  /* ОБЛОЖКА (Первая и последняя) */
+  .hard {
+    background: #3d2b16 !important; 
+    background-image: url('https://www.transparenttextures.com/patterns/leather.png') !important;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.6) !important;
   }
 
-  /* --- СТИЛИЗАЦИЯ ВНУТРЕННИХ СТРАНИЦ (МЯГКИХ) --- */
-  .page:not(.p1):not(.p4) {
-    /* Дополнительный градиент для глубины в корешке */
-    background-image: 
-      linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 10%),
-      url('image_0.png');
-    background-size: cover;
+  /* ВНУТРЕННИЕ СТРАНИЦЫ (Мягкие) */
+  .inner-page {
+    /* Легкая тень в центре для объема */
+    box-shadow: inset 25px 0 35px -25px rgba(0,0,0,0.4);
   }
 
-  /* Текст на внутренних страницах (если нужен) */
-  .page-content {
-    padding: 50px;
-    font-family: 'Georgia', serif;
-    font-size: 1.2em;
-    line-height: 1.6;
-    color: transparent; /* Скрываем текст по требованию */
-  }
-
-  /* КНОПКИ (Дополнительно, для удобства) */
+  /* УПРАВЛЕНИЕ */
   .controls {
-    position: absolute;
-    bottom: 20px;
+    margin-top: 30px;
     display: flex;
     gap: 20px;
   }
 
   .btn {
+    padding: 12px 30px;
+    background: #4a2f15;
+    color: #e2c799;
+    border: 1px solid #3d2b16;
+    border-radius: 4px;
     cursor: pointer;
-    background: rgba(120,80,30,0.4);
-    padding: 10px 20px;
-    color: #fff;
-    border-radius: 5px;
+    font-family: 'Georgia', serif;
+    font-size: 18px;
     user-select: none;
+    transition: 0.3s;
   }
+
+  .btn:hover { background: #5a3b1e; }
 </style>
 </head>
 <body>
 
 <div id="book">
-  <div class="page p1 hard"></div>
+  <div class="page hard"></div>
 
-  <div class="page p2">
-    <div class="page-content">
-      <p>Здесь мог бы быть ваш текст...</p>
-    </div>
-  </div>
+  <div class="page inner-page"></div>
+  <div class="page inner-page"></div>
+  <div class="page inner-page"></div>
+  <div class="page inner-page"></div>
+  <div class="page inner-page"></div>
+  <div class="page inner-page"></div>
 
-  <div class="page p3">
-    <div class="page-content">
-      <p>...но все надписи убраны.</p>
-    </div>
-  </div>
-
-  <div class="page p4 hard"></div>
+  <div class="page hard"></div>
 </div>
 
 <div class="controls">
-  <div class="btn" id="prev">&#9664; Назад</div>
-  <div class="btn" id="next">Вперед &#9654;</div>
+  <div class="btn" id="prev">◀ Назад</div>
+  <div class="btn" id="next">Вперед ▶</div>
 </div>
 
 <script>
   $(document).ready(function() {
-    // ИНИЦИАЛИЗАЦИЯ TURN.JS
+    // Инициализация мягкого перелистывания
     $('#book').turn({
-      width: 900,       // Общая ширина разворота
-      height: 600,      // Высота книги
-      autoCenter: true, // Центрировать книгу
-      duration: 1500,   // Плавность анимации (медленно)
-      gradients: true,  // Показывать градиенты и тени при сгибе
-      acceleration: true, // Использовать аппаратное ускорение
-      
-      // Настройка сгиба уголка
-      elevation: 50     // Высота подъема уголка
+      width: 900,
+      height: 600,
+      autoCenter: true,
+      duration: 1400, // Скорость
+      gradients: true, // Тени при изгибе
+      acceleration: true
     });
 
-    // ОБРАБОТКА КНОПОК
-    $('#prev').click(function() {
-      $('#book').turn('previous');
-    });
+    // Кнопки
+    $('#prev').click(function() { $('#book').turn('previous'); });
+    $('#next').click(function() { $('#book').turn('next'); });
 
-    $('#next').click(function() {
-      $('#book').turn('next');
-    });
-
-    // ПОДДЕРЖКА СТРЕЛОК КЛАВИАТУРЫ
+    // Клавиатура
     $(window).bind('keydown', function(e){
-      if (e.keyCode==37) // Лево
-        $('#book').turn('previous');
-      else if (e.keyCode==39) // Право
-        $('#book').turn('next');
+      if (e.keyCode == 37) $('#book').turn('previous');
+      else if (e.keyCode == 39) $('#book').turn('next');
     });
   });
 </script>
