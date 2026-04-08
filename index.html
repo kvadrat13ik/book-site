@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Старинная Книга с Мягким Перелистыванием</title>
+<title>Старинная Книга</title>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
 
 <style>
   body {
     margin: 0;
     padding: 0;
-    background-color: #1a1a1a; /* Тёмный фон */
+    background-color: #1a1a1a;
     display: flex;
+    flex-direction: column; /* Чтобы кнопки были под книгой */
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -22,92 +22,94 @@
     font-family: 'Georgia', serif;
   }
 
-  /* ОСНОВНОЙ КОНТЕЙНЕР КНИГИ */
+  /* Контейнер книги */
   #book {
     width: 800px;
     height: 500px;
-    /* Тень от всей книги */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    box-shadow: 0 10px 50px rgba(0,0,0,0.8);
   }
 
-  /* ОБЩИЕ СТИЛИ ДЛЯ ВСЕХ СТРАНИЦ */
+  /* Стили страниц */
   .page {
-    background-color: #f4e4c1; /* Базовый цвет пожелтевшей бумаги */
+    background-color: #f4e4c1;
     background-size: cover;
     box-sizing: border-box;
-    padding: 30px;
-    overflow: hidden;
+    padding: 40px;
   }
 
-  /* --- ТВЕРДАЯ ОБЛОЖКА (Первая и Последняя) --- */
+  /* Твердая обложка */
   .hardcover {
-    background-color: #5a3b1e; /* Коричневая кожа */
-    background-image: url('https://www.transparenttextures.com/patterns/leather.png'); /* Текстура кожи */
-    border: 2px solid #3d2b16;
-    border-radius: 5px;
-    color: #e2c799; /* Золотистый цвет текста */
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+    background-color: #4a2f15;
+    background-image: url('https://www.transparenttextures.com/patterns/leather.png');
+    color: #e2c799;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+    border: 1px solid #3d2b16;
   }
 
-  /* Центрирование контента на обложке */
-  .hardcover .page-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    text-align: center;
-  }
-
-  /* --- МЯГКИЕ ВНУТРЕННИЕ СТРАНИЦЫ --- */
+  /* Внутренние мягкие страницы */
   .inner-page {
-    /* Текстура старой пожелтевшей бумаги */
     background-image: 
-      radial-gradient(circle at 50% 50%, rgba(244, 228, 193, 0) 0%, rgba(200, 170, 110, 0.2) 100%),
+      radial-gradient(circle at center, rgba(244, 228, 193, 0) 0%, rgba(180, 150, 100, 0.15) 100%),
       url('https://www.transparenttextures.com/patterns/old-paper.png');
-    
-    color: #332211; /* Тёмно-коричневый текст */
-    border-left: 1px solid rgba(0,0,0,0.1); /* Тень в корешке */
+    color: #332211;
   }
 
-  /* Эффект неровных, потрепанных краев */
+  /* Неровные края (эффект старой бумаги) */
   .inner-page::after {
     content: "";
     position: absolute;
     inset: 0;
-    /* Маска для создания неровного края */
-    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0,0 Q1,5 0,10 T0,20 T0,30 T0,40 T0,50 T0,60 T0,70 T0,80 T0,90 T0,100 L100,100 L100,0 Z" fill="black"/></svg>');
-    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0,0 Q1,5 0,10 T0,20 T0,30 T0,40 T0,50 T0,60 T0,70 T0,80 T0,90 T0,100 L100,100 L100,0 Z" fill="black"/></svg>');
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0,0 Q2,5 0,10 T0,20 T1,30 T0,40 T2,50 T0,60 T0,70 T1,80 T0,90 T0,100 L100,100 L100,0 Z" fill="black"/></svg>');
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0,0 Q2,5 0,10 T0,20 T1,30 T0,40 T2,50 T0,60 T0,70 T1,80 T0,90 T0,100 L100,100 L100,0 Z" fill="black"/></svg>');
     -webkit-mask-size: 100% 100%;
     mask-size: 100% 100%;
-    
     pointer-events: none;
   }
 
-  /* Стилизация контента */
-  h1 { font-size: 3em; margin-bottom: 0.5em; }
-  h2 { font-size: 2em; border-bottom: 1px solid rgba(0,0,0,0.2); padding-bottom: 10px; }
-  p { line-height: 1.6; margin-bottom: 1em; font-size: 1.1em; }
-  .page-number {
-    position: absolute;
-    bottom: 15px;
-    width: calc(100% - 60px);
-    text-align: center;
-    font-size: 0.9em;
-    opacity: 0.6;
+  /* Контент */
+  .page-content { height: 100%; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+  h1 { font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px; }
+  p { line-height: 1.6; font-style: italic; }
+
+  /* Блок кнопок */
+  .controls {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+    z-index: 100;
+  }
+
+  .btn {
+    padding: 12px 25px;
+    background: #5a3b1e;
+    color: #e2c799;
+    border: 2px solid #3d2b16;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    font-weight: bold;
+    transition: all 0.3s;
+    user-select: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+
+  .btn:hover {
+    background: #724c29;
+    transform: translateY(-2px);
+  }
+
+  .btn:active {
+    transform: translateY(0);
   }
 </style>
 </head>
 <body>
 
 <div id="book">
-  
   <div class="page hardcover">
     <div class="page-content">
-      <h1>Древний Манускрипт</h1>
-      <p>Том I</p>
-      <p style="font-size: 3em; margin-top: 20px;">📜</p>
+      <h1>Старинный<br>Кодекс</h1>
+      <p>Секреты забытых мастеров</p>
     </div>
   </div>
 
@@ -115,62 +117,59 @@
 
   <div class="page inner-page">
     <div class="page-content">
-      <h2>Глава Первая</h2>
-      <p>В начале времен, когда мир был еще юн, а звезды не ведали своего пути, существовала легенда о книге, способной менять реальность...</p>
-      <p>Текст этой страницы выглядит старым, бумага пожелтела от времени.</p>
+      <h2>Глава I</h2>
+      <p>Бумага эта видела века. Края её истерты, а слова пропитаны тайной. Попробуйте перелистнуть за уголок или нажать кнопку ниже.</p>
     </div>
-    <div class="page-number">- 1 -</div>
   </div>
 
   <div class="page inner-page">
     <div class="page-content">
-      <p>Многие искатели приключений пытались найти её, но лишь немногие возвращались, и те хранили молчание.</p>
-      <p>Края этой страницы неровные, как будто её обрезали вручную древним ножом. Реалистичный изгиб при перелистывании достигается благодаря магии Turn.js.</p>
+      <h2>Глава II</h2>
+      <p>Мягкость движений достигнута благодаря Turn.js, а неровные края — с помощью современных масок CSS. Технологии прошлого и будущего в одном флаконе.</p>
     </div>
-    <div class="page-number">- 2 -</div>
   </div>
 
   <div class="page inner-page"></div>
 
   <div class="page hardcover">
     <div class="page-content">
-      <p>Конец Первого Тома</p>
-      <p>MCMXCIV</p>
+      <p>Конец первой части</p>
+      <small>Anno Domini 2026</small>
     </div>
   </div>
+</div>
 
+<div class="controls">
+  <div class="btn" id="prev-btn">◀ Назад</div>
+  <div class="btn" id="next-btn">Вперед ▶</div>
 </div>
 
 <script>
   $(document).ready(function() {
-    // ИНИЦИАЛИЗАЦИЯ TURN.JS
+    // Настройка книги
     $('#book').turn({
-      width: 800,       // Общая ширина разворота
-      height: 500,      // Высота книги
-      autoCenter: true, // Центрировать книгу при одном открытом листе
-      duration: 1500,   // Длительность анимации (в мс) - "плавно и мягко"
-      acceleration: true, // Использовать аппаратное ускорение
-      gradients: true,  // Показывать тени и градиенты при изгибе
-      elevation: 50,    // Высота подъема уголка при перелистывании
-      
-      // Настройка硬 (твердых) страниц
-      when: {
-        turning: function(event, page, view) {
-          // Логика, если нужно что-то делать в момент начала поворота
-        },
-        turned: function(event, page, view) {
-          // Логика, если нужно что-то делать после поворота
-        }
-      }
+      width: 800,
+      height: 500,
+      autoCenter: true,
+      duration: 1200, // Скорость анимации
+      gradients: true, // Тени при перелистывании
+      acceleration: true // Плавность
     });
-  });
 
-  // ПОДДЕРЖКА ПЕРЕЛИСТЫВАНИЯ СТРЕЛКАМИ КЛАВИАТУРЫ
-  $(window).bind('keydown', function(e){
-    if (e.keyCode==37)
+    // Обработка кликов по кнопкам
+    $('#prev-btn').on('click', function() {
       $('#book').turn('previous');
-    else if (e.keyCode==39)
+    });
+
+    $('#next-btn').on('click', function() {
       $('#book').turn('next');
+    });
+
+    // Управление стрелками клавиатуры
+    $(window).bind('keydown', function(e){
+      if (e.keyCode == 37) $('#book').turn('previous');
+      else if (e.keyCode == 39) $('#book').turn('next');
+    });
   });
 </script>
 
