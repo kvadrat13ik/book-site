@@ -4,61 +4,103 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Старинная книга</title>
+
 <style>
 body {
   margin: 0;
-  background: #c8b38c;
+  height: 100vh;
+  background: black;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  font-family: "Georgia", serif;
+  font-family: Georgia, serif;
 }
 
-.book-container {
-  perspective: 2000px;
-  width: 800px;
-  height: 500px;
-  position: relative;
-}
-
+/* КНИГА */
 .book {
-  width: 100%;
-  height: 100%;
   position: relative;
-  transform-style: preserve-3d;
+  width: 900px;
+  height: 550px;
+  perspective: 3000px;
 }
 
+/* КОРЕШОК */
+.spine {
+  position: absolute;
+  width: 6px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  background: #5a3b1e;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  z-index: 1000;
+}
+
+/* СТРАНИЦА */
 .page {
+  position: absolute;
   width: 50%;
   height: 100%;
-  background: #fdf5e6;
-  position: absolute;
   top: 0;
-  overflow: hidden;
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.2);
-  border: 1px solid #d4c2a8;
+  background: #f4e4c1;
   transform-origin: left center;
-  transition: transform 1s ease, z-index 1s;
+  transform-style: preserve-3d;
+  transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,0.25),
+    0 0 20px rgba(0,0,0,0.4);
 }
 
+/* ПРАВАЯ СТРАНИЦА */
 .page.right {
   left: 50%;
   transform-origin: right center;
 }
 
+/* ТЕКСТУРА СТАРОЙ БУМАГИ */
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(120,80,30,0.2) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(120,80,30,0.2) 0%, transparent 60%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* ПОТРЁПАННЫЕ КРАЯ */
+.page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('https://www.transparenttextures.com/patterns/old-paper.png');
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* СОДЕРЖИМОЕ */
 .page-content {
-  padding: 30px;
+  padding: 40px;
   height: 100%;
-  background: linear-gradient(90deg, #fdf5e6 0%, #f5ebd2 100%);
+  box-sizing: border-box;
 }
 
-.flipped {
+/* ИЗГИБ СТРАНИЦЫ */
+.page.flipping {
+  box-shadow:
+    inset 0 0 80px rgba(0,0,0,0.4),
+    0 0 40px rgba(0,0,0,0.6);
+}
+
+/* ПЕРЕВОРОТ */
+.page.flipped {
   transform: rotateY(-180deg);
-  z-index: 1;
 }
 
-.book-controls {
+/* КНОПКИ */
+.controls {
   position: absolute;
   width: 100%;
   top: 50%;
@@ -67,76 +109,89 @@ body {
   pointer-events: none;
 }
 
-.control {
+.btn {
   pointer-events: all;
   cursor: pointer;
-  background: rgba(150,111,51,0.3);
-  padding: 20px;
-  font-size: 24px;
-  user-select: none;
-  color: #3e2e1f;
+  background: rgba(120,80,30,0.4);
+  padding: 15px 20px;
   border-radius: 50%;
-  transition: background 0.3s;
-}
-
-.control:hover {
-  background: rgba(150,111,51,0.6);
+  color: #fff;
+  font-size: 22px;
+  user-select: none;
 }
 </style>
+
 </head>
 <body>
 
-<div class="book-container">
-  <div class="book" id="book">
-    <div class="page">
-      <div class="page-content">
-        <h2>Страница 1</h2>
-        <p>Левая страница книги.</p>
-      </div>
-    </div>
-    <div class="page right">
-      <div class="page-content">
-        <h2>Страница 2</h2>
-        <p>Правая страница книги.</p>
-      </div>
-    </div>
-    <div class="page">
-      <div class="page-content">
-        <h2>Страница 3</h2>
-        <p>Следующая левая страница.</p>
-      </div>
-    </div>
-    <div class="page right">
-      <div class="page-content">
-        <h2>Страница 4</h2>
-        <p>Следующая правая страница.</p>
-      </div>
-    </div>
+<div class="book" id="book">
 
-    <div class="book-controls">
-      <div class="control" id="prev">&#9664;</div>
-      <div class="control" id="next">&#9654;</div>
+  <div class="spine"></div>
+
+  <!-- страницы -->
+  <div class="page left">
+    <div class="page-content">
+      <h2>Страница 1</h2>
     </div>
   </div>
+
+  <div class="page right">
+    <div class="page-content">
+      <h2>Страница 2</h2>
+    </div>
+  </div>
+
+  <div class="page left">
+    <div class="page-content">
+      <h2>Страница 3</h2>
+    </div>
+  </div>
+
+  <div class="page right">
+    <div class="page-content">
+      <h2>Страница 4</h2>
+    </div>
+  </div>
+
+  <!-- кнопки -->
+  <div class="controls">
+    <div class="btn" id="prev">&#9664;</div>
+    <div class="btn" id="next">&#9654;</div>
+  </div>
+
 </div>
 
 <script>
-const pages = document.querySelectorAll('.page');
+const pages = document.querySelectorAll(".page");
 let current = 0;
 
-document.getElementById('next').addEventListener('click', () => {
-  if(current < pages.length) {
-    pages[current].classList.add('flipped');
-    current++;
-  }
-});
+function flipNext() {
+  if (current >= pages.length) return;
 
-document.getElementById('prev').addEventListener('click', () => {
-  if(current > 0) {
-    current--;
-    pages[current].classList.remove('flipped');
-  }
-});
+  pages[current].classList.add("flipping");
+
+  setTimeout(() => {
+    pages[current].classList.add("flipped");
+    pages[current].classList.remove("flipping");
+    current++;
+  }, 300);
+}
+
+function flipPrev() {
+  if (current <= 0) return;
+
+  current--;
+
+  pages[current].classList.add("flipping");
+
+  setTimeout(() => {
+    pages[current].classList.remove("flipped");
+    pages[current].classList.remove("flipping");
+  }, 300);
+}
+
+document.getElementById("next").onclick = flipNext;
+document.getElementById("prev").onclick = flipPrev;
 </script>
 
 </body>
