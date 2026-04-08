@@ -1,12 +1,3 @@
-body {
-    background: #d9cbb7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: 'Georgia', serif;
-}
-
 #book-container {
     width: 800px;
     height: 500px;
@@ -15,21 +6,6 @@ body {
 .page {
     width: 400px;
     height: 500px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    color: #3a2f1b;
-    padding: 30px;
-    box-sizing: border-box;
-    position: relative;
     box-shadow: 0 5px 25px rgba(0,0,0,0.4);
     border-radius: 0 0 15px 15px;
-}
-
-.page h2 {
-    margin-top: 0;
-}
-
-.page img {
-    max-width: 100%;
-    margin-top: 15px;
 }
