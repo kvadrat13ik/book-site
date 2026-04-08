@@ -1,30 +1,35 @@
 body {
-    font-family: 'Georgia', serif;
-    background: #f0e7d8;
+    background: #d9cbb7;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     min-height: 100vh;
+    font-family: 'Georgia', serif;
 }
 
 #book-container {
-    width: 600px;
-    height: 400px;
-    position: relative;
-    perspective: 2000px;
+    width: 800px;
+    height: 500px;
 }
 
 .page {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    padding: 20px;
-    overflow: hidden;
+    width: 400px;
+    height: 500px;
     background-size: cover;
     background-repeat: no-repeat;
     color: #3a2f1b;
+    padding: 30px;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+    border-radius: 0 0 15px 15px;
+}
+
+.page h2 {
+    margin-top: 0;
+}
+
+.page img {
+    max-width: 100%;
+    margin-top: 15px;
 }
