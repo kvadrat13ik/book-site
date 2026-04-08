@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Редактор книги</h2>
+
+<textarea id="text" style="width:100%;height:300px;"></textarea>
+<br><br>
+<button onclick="save()">Сохранить</button>
+
+<script>
+function save() {
+  const text = document.getElementById('text').value;
+
+  const data = {
+    pages: text.split('---')
+  };
+
+  console.log(JSON.stringify(data));
+  alert("Скопируй JSON из консоли");
+}
+</script>
+
+</body>
+</html>
