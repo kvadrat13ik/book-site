@@ -1,6 +1,14 @@
-{
-  "pages": [
-    "",
-    ""
-  ]
-}
+[
+  {
+    "title": "Глава 1",
+    "text": "Это текст первой страницы книги. Здесь можно писать что угодно!",
+    "image": "images/pic1.jpg",
+    "texture": "images/page-bg.jpg"
+  },
+  {
+    "title": "Глава 2",
+    "text": "Текст второй страницы...",
+    "image": "images/pic2.jpg",
+    "texture": "images/page-bg.jpg"
+  }
+]
