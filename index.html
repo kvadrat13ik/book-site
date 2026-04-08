@@ -2,20 +2,134 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Моя книга</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Старинная книга</title>
+<style>
+  body {
+    margin: 0;
+    background: #c8b38c; /* цвет старой бумаги */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: "Georgia", serif;
+  }
+
+  .book {
+    perspective: 2000px;
+    width: 800px;
+    height: 500px;
+    position: relative;
+  }
+
+  .page {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background: #fdf5e6; /* цвет страниц */
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    transform-origin: left;
+    transition: transform 1s ease;
+    border: 1px solid #d4c2a8;
+    overflow: hidden;
+  }
+
+  .page:nth-child(even) {
+    left: 50%;
+    transform-origin: right;
+  }
+
+  .page-content {
+    padding: 30px;
+    height: 100%;
+    box-sizing: border-box;
+    background: linear-gradient(90deg, rgba(253,245,230,1) 0%, rgba(245,235,210,1) 100%);
+  }
+
+  .flipped {
+    transform: rotateY(-180deg);
+    z-index: 1;
+  }
+
+  .book-controls {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .control {
+    pointer-events: all;
+    cursor: pointer;
+    background: rgba(150, 111, 51, 0.3);
+    padding: 20px;
+    font-size: 24px;
+    user-select: none;
+    color: #3e2e1f;
+    border-radius: 50%;
+    transition: background 0.3s;
+  }
+
+  .control:hover {
+    background: rgba(150,111,51,0.6);
+  }
+</style>
 </head>
 <body>
 
-<div id="book-container">
-    <!-- Страницы будут подгружаться из content.json -->
+<div class="book" id="book">
+  <div class="page">
+    <div class="page-content">
+      <h2>Страница 1</h2>
+      <p>Добро пожаловать в старинную книгу. Здесь текст пока пустой, можно вставлять любой контент.</p>
+    </div>
+  </div>
+  <div class="page">
+    <div class="page-content">
+      <h2>Страница 2</h2>
+      <p>Эта страница противоположная. Листай вправо или влево, чтобы перелистывать.</p>
+    </div>
+  </div>
+  <div class="page">
+    <div class="page-content">
+      <h2>Страница 3</h2>
+      <p>Добавляй столько страниц, сколько нужно. Каждая страница имеет эффект перелистывания.</p>
+    </div>
+  </div>
+  <div class="page">
+    <div class="page-content">
+      <h2>Страница 4</h2>
+      <p>Последняя страница пока пустая. Можно сделать иллюстрации или текст.</p>
+    </div>
+  </div>
+
+  <div class="book-controls">
+    <div class="control" id="prev">&#9664;</div>
+    <div class="control" id="next">&#9654;</div>
+  </div>
 </div>
 
-<div class="controls">
-    <button id="prev">◀ Назад</button>
-    <button id="next">Вперед ▶</button>
-</div>
+<script>
+  const pages = document.querySelectorAll('.page');
+  let current = 0;
 
-<script src="script.js"></script>
+  document.getElementById('next').addEventListener('click', () => {
+    if (current < pages.length) {
+      pages[current].classList.add('flipped');
+      current++;
+    }
+  });
+
+  document.getElementById('prev').addEventListener('click', () => {
+    if (current > 0) {
+      current--;
+      pages[current].classList.remove('flipped');
+    }
+  });
+</script>
+
 </body>
 </html>
