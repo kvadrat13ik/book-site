@@ -3,24 +3,20 @@ fetch('content.json')
 .then(data => {
     const book = $('#book-container');
 
-    data.forEach((page) => {
+    data.forEach(page => {
         const div = $('<div/>', {class: 'page'}).css({
-            'background-image': `url('${page.texture}')`
-        }).html(`
-            <h2>${page.title}</h2>
-            <p>${page.text}</p>
-            ${page.image ? `<img src="${page.image}">` : ''}
-        `);
+            'background-image': `url('${page.texture}')`,
+            'background-size': 'cover'
+        });
         book.append(div);
     });
 
-    // Инициализация turn.js с двухстраничным режимом
     book.turn({
         width: 800,
         height: 500,
+        display: 'double',  // две страницы одновременно
         autoCenter: true,
-        display: 'double',
-        elevation: 50,
+        elevation: 50,      // тень и сгиб
         gradients: true,
         duration: 1000
     });
