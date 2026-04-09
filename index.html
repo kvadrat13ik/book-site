@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Старинная книга</title>
+<title>Книга пони</title>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
@@ -48,24 +48,55 @@
     background-repeat: no-repeat !important;
 }
 
-/* Добавим это, чтобы Turn.js не сжимал внутренние контейнеры */
-.turn-page, .turn-page-wrapper {
-    width: 450px !important;
-    height: 600px !important;
+/* --- НОВЫЙ КОД ДЛЯ ОБЛОЖКИ И КОРЕШКА --- */
+
+/* 1. Увеличиваем размер только для жестких страниц (обложки) */
+#book .page.hard {
+    width: 460px !important;   /* На 10px шире мягких листов */
+    height: 610px !important;  /* На 10px выше мягких листов */
+    top: -5px;                 /* Сдвигаем вверх, чтобы мягкие листы были по центру */
+    z-index: 10;
+    /* Убираем сгибание (визуально) */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important; 
 }
 
-  /* ОБЛОЖКА (Первая и последняя) */
-  .hard {
-    background: #3d2b16 !important; 
-    background-image: url('https://www.transparenttextures.com/patterns/leather.png') !important;
-    box-shadow: inset 0 0 40px rgba(0,0,0,0.6) !important;
-  }
+/* 2. Создаем корешок книги (визуальный элемент под страницами) */
+#book::before {
+    content: "";
+    position: absolute;
+    top: -5px;                 /* Должен совпадать с высотой обложки */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;               /* Ширина корешка */
+    height: 610px;
+    background: #2b1d0e;
+    /* Градиент создает эффект объема корешка */
+    background-image: linear-gradient(to right, #1a1005, #3d2b16, #1a1005);
+    z-index: 1;                /* Чтобы страницы перелистывались ПОВЕРХ него */
+    border-radius: 3px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
 
-  /* ВНУТРЕННИЕ СТРАНИЦЫ (Мягкие) */
-  .inner-page {
-    /* Легкая тень в центре для объема */
-    box-shadow: inset 25px 0 35px -25px rgba(0,0,0,0.4);
-  }
+/* 3. Стили для внешней стороны обложки (кожа) */
+.front-side { 
+    border-radius: 0 5px 5px 0; 
+    left: 0 !important;
+}
+
+.back-side { 
+    border-radius: 5px 0 0 5px; 
+}
+
+/* 4. Стили для внутренней стороны обложки (теперь тоже кожаная) */
+.internal-side {
+    /* Применяем ту же текстуру кожи, что и снаружи */
+    background-image: url('https://www.transparenttextures.com/patterns/leather.png') !important;
+    /* Тот же базовый цвет кожи */
+    background-color: #3d2b16 !important;
+    /* Усиливаем внутреннюю тень у корешка, чтобы отделить обложку от мягких листов */
+    box-shadow: inset 40px 0 50px -20px rgba(0,0,0,0.7) !important;
+    border: 1px solid #2b1d0e;
+}
 
   /* УПРАВЛЕНИЕ */
   .controls {
@@ -93,7 +124,21 @@
 <body>
 
 <div id="book">
+  <div class="page hard"></div> ...
   <div class="page hard"></div>
+</div>
+
+  <div id="book">
+  <div class="page hard front-side"></div> 
+  <div class="page hard internal-side"></div>
+
+  <div class="page inner-page"></div>
+  <div class="page inner-page"></div>
+  ... 
+
+  <div class="page hard internal-side"></div>
+  <div class="page hard back-side"></div>
+</div>
 
   <div class="page inner-page"></div>
   <div class="page inner-page"></div>
@@ -106,8 +151,8 @@
 </div>
 
 <div class="controls">
-  <div class="btn" id="prev">◀ Назад</div>
-  <div class="btn" id="next">Вперед ▶</div>
+  <div class="btn" id="prev">◀</div>
+  <div class="btn" id="next">▶</div>
 </div>
 
 <script>
