@@ -1,26 +1,43 @@
 fetch('content.json')
 .then(res => res.json())
 .then(data => {
-    const book = $('#book-container');
-    
- data.forEach((page, index) => {
-    // Определяем, обложка это или обычная страница
-    const isCover = index === 0 || index === data.length - 1;
-    const className = isCover ? 'page cover' : 'page';
+    const book = $('#book');
 
-    const div = $('<div/>', { class: className }).css({
-        'background-image': `url('${page.texture}')`
+    // 1. Сначала подгружаем мягкие страницы из JSON внутрь книги
+    // Вставляем их ПЕРЕД задней обложкой (перед предпоследним элементом)
+    data.forEach((item) => {
+        const pageHtml = `
+            <div class="page inner-page">
+                <div style="background-image: url('${item.texture}'); position:absolute; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.3;"></div>
+                <h2>${item.title}</h2>
+                <p>${item.text}</p>
+                ${item.image ? `<img src="${item.image}" style="width:100%">` : ''}
+            </div>`;
+        $(pageHtml).insertBefore('#book .hard.internal-side:last');
     });
-    book.append(div);
+
+    // 2. Теперь инициализируем книгу с вашими настройками
+    book.turn({
+        width: 920, 
+        height: 610,
+        display: 'double',
+        acceleration: true,
+        elevation: 0, 
+        pages: book.children().length, 
+        when: {
+            turning: function(event, page, view) {
+                // Если это первая или последняя страница (обложка), 
+                // turn.js поймет класс .hard и не будет её гнуть
+            }
+        }
+    });
 });
 
-    book.turn({
-        width: 900,         // ИСПРАВЛЕНО: Теперь совпадает с CSS (450+450)
-        height: 600,        // ИСПРАВЛЕНО: Теперь совпадает с CSS
-        display: 'double',  
-        autoCenter: true,
-        elevation: 0,       // ИСПРАВЛЕНО: 0 убирает лишние белые тени при перелистывании
-        gradients: false,   // ИСПРАВЛЕНО: false убирает стандартный серый градиент Turn.js
-        duration: 1000
-    });
+// 3. Управление кнопками и клавиатурой (чтобы не пропало)
+$('#prev').click(() => $('#book').turn('previous'));
+$('#next').click(() => $('#book').turn('next'));
+
+$(window).bind('keydown', function(e){
+    if (e.keyCode == 37) $('#book').turn('previous');
+    else if (e.keyCode == 39) $('#book').turn('next');
 });
